@@ -32,20 +32,6 @@ func NewOFilterMiddleware() *Middleware {
 	return &Middleware{}
 }
 
-/*
-type header struct {
-	Content_Length string `json:"Content-Length"`
-	Content_Type   string `json:"Content-Type"`
-	Host           string
-	User_Agent     string `json:"User-Agent`
-}
-type respJson struct {
-	Origin  string `json:"origin"`
-	Url     string `json:"url"`
-	Headers header `json:"headers"`
-}
-*/
-
 // Middleware is a oFilter middleware to call specific filter service.
 type Middleware struct{}
 

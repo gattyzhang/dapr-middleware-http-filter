@@ -1,4 +1,4 @@
-module github.com/gattyzhang/dapr-try
+module github.com/gattyzhang/testWebserver
 
 go 1.17
 
