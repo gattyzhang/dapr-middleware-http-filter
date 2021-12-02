@@ -1,0 +1,17 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: filter
+spec:
+  type: middleware.http.filter
+  version: v1
+  metadata:
+  - name: req_header_cookie_parms
+    value: "Appid,Token,Session-Token,Flag-Forward"
+  - name: filter_url
+    #value: "http://httpbin.org/post?key=123"
+    value: "http://192.168.18.231:8001/?abc=323&sss=333&TestBackOut"
+  - name: filter_err_url
+    value: "https://192.168.18.231:8001/default-error/"
+  - name: filter_skip_uri
+    value: "/v1.0/state/statestore,/v1.0/pubsub/top"
