@@ -1,5 +1,5 @@
 # dapr-middleware-http-filter
-a customized middleware of DAPR. 
+a customized filter middleware of DAPR. 
 
 
 filter 集成测试步骤
