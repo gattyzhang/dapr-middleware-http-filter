@@ -22,13 +22,14 @@ annotations:
     dapr.io/sidecar-listen-addresses: 0.0.0.0
 
 
-2. docker 
+2. docker 设置
 sudo vi /etc/systemd/system/docker.service.d/http-proxy.conf
----
+
 [Service]
 Environment="HTTP_PROXY=192.168.11.210:9090" "HTTPS_PROXY=192.168.11.210:9090" "NO_PROXY=localhost,127.0.0.1,192.168.49.2"
 
-启动minikube 时，如果要访问墙外url，加上proxy env, 才minikube start
+启动minikube 时，如果要访问墙外url，加上proxy env, 再启动minikube。
+
 export HTTP_PROXY=http://192.168.11.210:9090
 export HTTPS_PROXY=http://192.168.11.210:9090
 export NO_PROXY=localhost,127.0.0.1,192.168.49.2(缺省已经有了，可以不运行)
