@@ -83,7 +83,7 @@ func (m *Middleware) skipUri(uri []byte, list []string) bool {
 	return false
 }
 
-func (m *Middleware) grayRunHandler(ctx *fasthttp.RequestCtx, val_filter_err_url []byte) {
+func (m *Middleware) grayRunHandler(ctx *fasthttp.RequestCtx, val_filter_err_url []byte) error {
 	reqGray := fasthttp.AcquireRequest()
 	defer fasthttp.ReleaseRequest(reqGray) // 用完需要释放资源
 	reqGray.Header.SetContentType("application/json")
@@ -100,17 +100,18 @@ func (m *Middleware) grayRunHandler(ctx *fasthttp.RequestCtx, val_filter_err_url
 	defer fasthttp.ReleaseResponse(respGray) // 用完需要释放资源
 
 	if errGray := fasthttp.Do(reqGray, respGray); errGray != nil {
-		fmt.Println("请求Gray Run微服务异常-fasthttp.do。", errGray.Error())
-		return
+		return errGray
 	}
 	fmt.Println("gatty---3.4-- GrayRun ", string(respGray.Body()))
 
 	//copy back the returns
 	ctx.Response.SetBody(respGray.Body())
 	respGray.Header.VisitAll(func(k []byte, v []byte) {
-		fmt.Println("---- 1.5.2 copy back the response ", string(k), string(v))
+		//fmt.Println("---- 1.5.2 copy back the response ", string(k), string(v))
 		ctx.Response.Header.Add(string(k), string(v))
 	})
+
+	return nil
 }
 
 func (m *Middleware) writeBackHeaders(meta *oFilterMiddlewareMetadata, ctx *fasthttp.RequestCtx, filterResp *fasthttp.Response) {
@@ -241,7 +242,11 @@ func (m *Middleware) GetHandler(metadata middleware.Metadata) (func(h fasthttp.R
 				return
 			} else if val_flag_forward == header_key_flag_forward_GrayRun {
 				//gray run
-				m.grayRunHandler(ctx, val_filter_err_url)
+				errGray := m.grayRunHandler(ctx, val_filter_err_url)
+				if errGray != nil {
+					fmt.Println("请求Gray Run微服务异常-fasthttp.do。", errGray.Error())
+					return
+				}
 				//回写filter指定的header
 				m.writeBackHeaders(meta, ctx, resp)
 				return
@@ -249,11 +254,10 @@ func (m *Middleware) GetHandler(metadata middleware.Metadata) (func(h fasthttp.R
 				// normal
 				m.writeBackHeaders(meta, ctx, resp)
 				fmt.Println("gatty---3.2-- NORMAL ", string(resp.Body()))
+				// go back to the business process...
+				h(ctx)
 			}
-
 			// end of the filter's work.
-			// 2.0 go back to the business process...
-			h(ctx)
 		}
 	}, nil
 }
