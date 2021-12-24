@@ -1,3 +1,9 @@
+2021.12.24
+
+迁移到了这个项目：
+https://github.com/gattyzhang/components-contrib/tree/middleware_filter
+
+--------------------------------
 # dapr-middleware-http-filter
 a customized filter middleware of DAPR. 
 
